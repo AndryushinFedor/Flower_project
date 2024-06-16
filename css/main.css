@@ -1,0 +1,32 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.question {
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+.choices {
+    display: flex;
+    gap: 10px;
+}
+
+.choice,
+.color-circle {
+    padding: 10px 20px;
+    border: 1px solid #000;
+    cursor: pointer;
+}
+
+.color-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
