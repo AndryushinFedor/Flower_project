@@ -7,16 +7,30 @@ const questions = [
 
 const flowerTypes = {
     "Option1-Option1": "Rose",
-    "Option1-Option2": "Lily",
-    "Option1-Option3": "Tulip",
-    "Option1-Option4": "Orchid",
-    "Option1-Option5": "Lilac",
-    "Option2-Option1": "Sunflower",
-    "Option2-Option2": "Daisy",
-    "Option2-Option3": "Carnation",
-    "Option2-Option4": "Peony",
-    "Option2-Option5": "Chrysanthemum",
-    // Add more combinations as needed
+    "Option1-Option2": "Tulip",
+    "Option1-Option3": "Daisy",
+    "Option1-Option4": "Sunflower",
+    "Option1-Option5": "Lily",
+    "Option2-Option1": "Orchid",
+    "Option2-Option2": "Iris",
+    "Option2-Option3": "Daffodil",
+    "Option2-Option4": "Violet",
+    "Option2-Option5": "Hydrangea",
+    "Option3-Option1": "Chrysanthemum",
+    "Option3-Option2": "Peony",
+    "Option3-Option3": "Magnolia",
+    "Option3-Option4": "Jasmine",
+    "Option3-Option5": "Lavender",
+    "Option4-Option1": "Poppy",
+    "Option4-Option2": "Marigold",
+    "Option4-Option3": "Gladiolus",
+    "Option4-Option4": "Hibiscus",
+    "Option4-Option5": "Camellia",
+    "Option5-Option1": "Anemone",
+    "Option5-Option2": "Geranium",
+    "Option5-Option3": "Petunia",
+    "Option5-Option4": "Snapdragon",
+    "Option5-Option5": "Zinnia"
 };
 
 const answers = [];
@@ -71,24 +85,42 @@ function nextQuestion() {
 }
 
 function generatePrompt() {
-    console.log("Final Answers: ", answers);
-
     const flowerType = flowerTypes[`${answers[2]}-${answers[3]}`] || "Unknown flower";
     const prompt = `${answers[0]} ${answers[1]} ${flowerType}`;
-    console.log(`Generated Prompt: ${prompt}`);
+    document.getElementById('container').style.display = 'none';
+    displayTerminalAnimation(prompt, flowerType);
+}
 
-    // Send data to TouchDesigner
-    // fetch('https://your-api-endpoint.com', {
-    //     method: 'POST',
-    //     headers: {
-    //         'Content-Type': 'application/json'
-    //     },
-    //     body: JSON.stringify({ prompt: prompt })
-    // }).then(response => response.json())
-    // .then(data => console.log('Success:', data))
-    // .catch((error) => {
-    //     console.error('Error:', error);
-    // });
+function displayTerminalAnimation(prompt, flowerType) {
+    const terminal = document.getElementById('terminal');
+    terminal.style.display = 'block';
+    const text = `Generating flower...\nColour: ${answers[0]}\nForm: ${answers[1]}\nType: ${flowerType}\n\nGenerated Prompt: ${prompt}`;
+    let i = 0;
+
+    function typeWriter() {
+        if (i < text.length) {
+            terminal.innerHTML += text.charAt(i);
+            i++;
+            setTimeout(typeWriter, 50); // Adjust typing speed here
+        } else {
+            // Send data to TouchDesigner after typing is complete
+            /*
+            fetch('https://your-api-endpoint.com', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ prompt: prompt })
+            }).then(response => response.json())
+            .then(data => console.log('Success:', data))
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+            */
+        }
+    }
+
+    typeWriter();
 }
 
 showQuestion(currentQuestion);
