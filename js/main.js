@@ -100,17 +100,24 @@ function showQuestion(index) {
     const instructionsElement = document.getElementById('instructions');
     if (questionElement) {
         questionElement.textContent = question.text;
-        questionElement.classList.remove('typing'); // Reset animation
-        void questionElement.offsetWidth; // Trigger reflow
-        questionElement.classList.add('typing'); // Restart animation
+        questionElement.style.opacity = 0;
+        questionElement.style.transform = "translateY(20px)";
+        setTimeout(() => {
+            questionElement.style.opacity = 1;
+            questionElement.style.transform = "translateY(0)";
+        }, 100); // Delay to ensure the transition works
     } else {
         console.error('Element with ID "question" not found.');
         return;
     }
     if (instructionsElement) {
-        instructionsElement.classList.remove('typing'); // Reset animation
-        void instructionsElement.offsetWidth; // Trigger reflow
-        instructionsElement.classList.add('typing'); // Restart animation
+        instructionsElement.textContent = "Use keys 1 (left) and 5 (right) to change options, and 3 to select";
+        instructionsElement.style.opacity = 0;
+        instructionsElement.style.transform = "translateY(20px)";
+        setTimeout(() => {
+            instructionsElement.style.opacity = 1;
+            instructionsElement.style.transform = "translateY(0)";
+        }, 100); // Delay to ensure the transition works
     } else {
         console.error('Element with ID "instructions" not found.');
         return;
@@ -258,19 +265,15 @@ function displayTerminalAnimation(prompt) {
 
 function animateFadeOut() {
     const container = document.getElementById('container');
-    const elements = container.querySelectorAll('.choice, .color-circle');
+    const elements = container.querySelectorAll('.choice, .color-circle, .title, .instructions');
     elements.forEach((element, index) => {
-        if (!element.classList.contains('selected')) {
-            setTimeout(() => element.classList.add('fade-out'), index * 100);
-        }
+        setTimeout(() => element.classList.add('fade-out'), index * 100);
     });
     setTimeout(() => {
-        const selectedElement = container.querySelector('.selected');
-        if (selectedElement) {
-            selectedElement.classList.add('fade-out');
-        }
-        setTimeout(() => {
-            elements.forEach(element => element.classList.add('hidden'));
-        }, 2000);
-    }, 1000);
+        elements.forEach(element => element.classList.add('hidden'));
+        elements.forEach(element => {
+            element.classList.remove('fade-out');
+            element.classList.remove('hidden');
+        });
+    }, 2000);
 }

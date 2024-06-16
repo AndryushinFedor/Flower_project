@@ -71,8 +71,10 @@ body {
     color: #00EC7B;
     text-align: center;
     font-family: DinaRemasterII;
-    overflow: hidden;
     display: inline-block;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 1s ease-in-out, transform 1s ease-in-out;
 }
 
 .title {
@@ -194,28 +196,6 @@ body {
     filter: drop-shadow(0px 0px 20px #AB09E6);
 }
 
-@keyframes typing {
-    from {
-        width: 0;
-    }
-
-    to {
-        width: 100%;
-    }
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
 @keyframes fadeOut {
     from {
         opacity: 1;
@@ -226,8 +206,9 @@ body {
     }
 }
 
-.typing {
-    animation: typing 4s steps(40, end);
+.fade-in {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 .fade-out {
