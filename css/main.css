@@ -206,6 +206,16 @@ body {
     }
 }
 
+@keyframes delayedFadeOut {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+
 .fade-in {
     opacity: 1;
     transform: translateY(0);
@@ -213,6 +223,10 @@ body {
 
 .fade-out {
     animation: fadeOut 1s forwards;
+}
+
+.fade-out-delayed {
+    animation: delayedFadeOut 1s forwards 2s;
 }
 
 .hidden {
