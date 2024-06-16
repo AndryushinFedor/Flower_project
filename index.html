@@ -9,19 +9,22 @@
 </head>
 <body>
     <div class="terminal-container">
-        <div class="terminal" id="terminal" style="display:none;"></div>
+        <div id="terminal" class="terminal"></div>
     </div>
-    <div class="container" id="container">
-        <div class="question" id="question">Question will be here</div>
-        <div class="choices" id="choices"></div>
-        <div class="choices" id="color-choices" style="display:none;">
-            <div class="color-circle" data-value="Red" style="background-color: red;"></div>
-            <div class="color-circle" data-value="Green" style="background-color: green;"></div>
-            <div class="color-circle" data-value="Blue" style="background-color: blue;"></div>
-            <div class="color-circle" data-value="Yellow" style="background-color: yellow;"></div>
-            <div class="color-circle" data-value="Purple" style="background-color: purple;"></div>
-            <div class="color-circle" data-value="Orange" style="background-color: orange;"></div>
+    <div id="container" class="container">
+        <div class="header">
+            <div id="question" class="title"></div>
+            <div id="instructions" class="instructions">Use keys 1 (left) and 5 (right) to change options, and 3 to select</div>
         </div>
+        <div id="color-display" class="color-display">
+            <div class="color-circle"></div>
+            <div class="color-circle"></div>
+            <div class="color-circle"></div>
+            <div class="color-circle"></div>
+            <div class="color-circle"></div>
+            <div class="color-circle"></div>
+        </div>
+        <div id="choices" class="choices"></div>
     </div>
     <script src="js/main.js"></script>
 </body>
