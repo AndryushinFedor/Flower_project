@@ -38,25 +38,26 @@ let currentQuestion = 0;
 let currentColorIndex = 0;
 let currentChoiceIndex = 0;
 
+// Load sounds
+const clickSound = new Audio('sounds/click.wav');
+const selectSound = new Audio('sounds/select.wav');
+
 document.addEventListener('DOMContentLoaded', function() {
     showQuestion(currentQuestion);
 });
 
 document.addEventListener('keydown', function(event) {
-    if (['1', '5', '3'].includes(event.key)) {
-        handleKeyPress(event.key);
+    if (event.key === '1') {
+        changeSelection(-1);
+        clickSound.play();
+    } else if (event.key === '5') {
+        changeSelection(1);
+        clickSound.play();
+    } else if (event.key === '3') {
+        handleUserInput();
+        selectSound.play();
     }
 });
-
-function handleKeyPress(key) {
-    if (key === '1') {
-        changeSelection(-1);
-    } else if (key === '5') {
-        changeSelection(1);
-    } else if (key === '3') {
-        handleUserInput();
-    }
-}
 
 function changeSelection(direction) {
     const question = questions[currentQuestion];
@@ -78,7 +79,7 @@ function handleUserInput() {
         answers.push(value);
     }
     animateFadeOut();
-    setTimeout(nextQuestion, 2000);
+    setTimeout(nextQuestion, 2000); // Delay for 2 seconds before moving to the next question
 }
 
 function updateColorDisplay() {
@@ -116,12 +117,12 @@ function showQuestion(index) {
             div.textContent = choice;
             choicesDiv.appendChild(div);
         });
-        currentChoiceIndex = Math.floor(question.choices.length / 2);
+        currentChoiceIndex = Math.floor(question.choices.length / 2); // Default to the middle choice
         updateChoiceDisplay();
     } else if (question.type === "color") {
         choicesDiv.style.display = "none";
         colorDisplayDiv.style.display = "flex";
-        currentColorIndex = 0;
+        currentColorIndex = 0; // Start with the first color
         updateColorDisplay();
     }
 }
@@ -130,12 +131,10 @@ function updateTextContent(elementId, textContent) {
     const element = document.getElementById(elementId);
     if (element) {
         element.textContent = textContent;
-        element.style.opacity = 0;
-        element.style.transform = "translateY(20px)";
+        element.classList.remove('fade-in');
         setTimeout(() => {
-            element.style.opacity = 1;
-            element.style.transform = "translateY(0)";
-        }, 100);
+            element.classList.add('fade-in');
+        }, 0); // Restart animation
     } else {
         console.error(`Element with ID "${elementId}" not found.`);
     }
