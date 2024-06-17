@@ -43,14 +43,20 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 document.addEventListener('keydown', function(event) {
-    if (event.key === '1') {
-        changeSelection(-1);
-    } else if (event.key === '5') {
-        changeSelection(1);
-    } else if (event.key === '3') {
-        handleUserInput();
+    if (['1', '5', '3'].includes(event.key)) {
+        handleKeyPress(event.key);
     }
 });
+
+function handleKeyPress(key) {
+    if (key === '1') {
+        changeSelection(-1);
+    } else if (key === '5') {
+        changeSelection(1);
+    } else if (key === '3') {
+        handleUserInput();
+    }
+}
 
 function changeSelection(direction) {
     const question = questions[currentQuestion];
@@ -72,56 +78,27 @@ function handleUserInput() {
         answers.push(value);
     }
     animateFadeOut();
-    setTimeout(nextQuestion, 2000); // Delay for 2 seconds before moving to the next question
+    setTimeout(nextQuestion, 2000);
 }
 
 function updateColorDisplay() {
-    const question = questions[currentQuestion];
-    if (question.type === "color") {
-        const colorCircles = document.querySelectorAll('.color-circle');
-        colorCircles.forEach((circle, index) => {
-            circle.classList.toggle('selected', index === currentColorIndex);
-        });
-    }
+    const colorCircles = document.querySelectorAll('.color-circle');
+    colorCircles.forEach((circle, index) => {
+        circle.classList.toggle('selected', index === currentColorIndex);
+    });
 }
 
 function updateChoiceDisplay() {
-    const choicesDiv = document.getElementById('choices');
-    const choices = choicesDiv.children;
-    for (let i = 0; i < choices.length; i++) {
-        choices[i].classList.remove('selected');
-    }
-    choices[currentChoiceIndex].classList.add('selected');
+    const choices = document.getElementById('choices').children;
+    Array.from(choices).forEach((choice, index) => {
+        choice.classList.toggle('selected', index === currentChoiceIndex);
+    });
 }
 
 function showQuestion(index) {
     const question = questions[index];
-    const questionElement = document.getElementById('question');
-    const instructionsElement = document.getElementById('instructions');
-    if (questionElement) {
-        questionElement.textContent = question.text;
-        questionElement.style.opacity = 0;
-        questionElement.style.transform = "translateY(20px)";
-        setTimeout(() => {
-            questionElement.style.opacity = 1;
-            questionElement.style.transform = "translateY(0)";
-        }, 100); // Delay to ensure the transition works
-    } else {
-        console.error('Element with ID "question" not found.');
-        return;
-    }
-    if (instructionsElement) {
-        instructionsElement.textContent = "Use keys 1 (left) and 5 (right) to change options, and 3 to select";
-        instructionsElement.style.opacity = 0;
-        instructionsElement.style.transform = "translateY(20px)";
-        setTimeout(() => {
-            instructionsElement.style.opacity = 1;
-            instructionsElement.style.transform = "translateY(0)";
-        }, 100); // Delay to ensure the transition works
-    } else {
-        console.error('Element with ID "instructions" not found.');
-        return;
-    }
+    updateTextContent('question', question.text);
+    updateTextContent('instructions', "Use keys 1 (left) and 5 (right) to change options, and 3 to select");
 
     const choicesDiv = document.getElementById('choices');
     const colorDisplayDiv = document.getElementById('color-display');
@@ -139,13 +116,28 @@ function showQuestion(index) {
             div.textContent = choice;
             choicesDiv.appendChild(div);
         });
-        currentChoiceIndex = Math.floor(question.choices.length / 2); // Default to the middle choice
+        currentChoiceIndex = Math.floor(question.choices.length / 2);
         updateChoiceDisplay();
     } else if (question.type === "color") {
         choicesDiv.style.display = "none";
         colorDisplayDiv.style.display = "flex";
-        currentColorIndex = 0; // Start with the first color
+        currentColorIndex = 0;
         updateColorDisplay();
+    }
+}
+
+function updateTextContent(elementId, textContent) {
+    const element = document.getElementById(elementId);
+    if (element) {
+        element.textContent = textContent;
+        element.style.opacity = 0;
+        element.style.transform = "translateY(20px)";
+        setTimeout(() => {
+            element.style.opacity = 1;
+            element.style.transform = "translateY(0)";
+        }, 100);
+    } else {
+        console.error(`Element with ID "${elementId}" not found.`);
     }
 }
 
@@ -222,27 +214,27 @@ function displayTerminalAnimation(prompt) {
 
     let i = 0;
     let isRapidPhase = false;
-    const maxLines = 20; // Maximum number of lines displayed on the screen
+    const maxLines = 20;
 
     function typeWriter() {
         if (!isRapidPhase) {
             if (i < initialLines.length) {
                 appendLine(initialLines[i]);
                 i++;
-                setTimeout(typeWriter, 1000); // Adjust typing speed for initial lines
+                setTimeout(typeWriter, 1000);
             } else {
                 i = 0;
                 isRapidPhase = true;
-                setTimeout(typeWriter, 500); // Short delay before starting rapid lines
+                setTimeout(typeWriter, 500);
             }
         } else {
             if (i < rapidLines.length) {
                 appendLine(rapidLines[i]);
                 i++;
-                setTimeout(typeWriter, 100); // Adjust typing speed for rapid lines
+                setTimeout(typeWriter, 100);
             } else {
                 i = 0;
-                setTimeout(typeWriter, 100); // Restart rapid lines
+                setTimeout(typeWriter, 100);
             }
         }
     }
@@ -252,7 +244,6 @@ function displayTerminalAnimation(prompt) {
         line.textContent = text;
         terminal.appendChild(line);
 
-        // Remove extra lines
         if (terminal.children.length > maxLines) {
             terminal.removeChild(terminal.firstChild);
         }

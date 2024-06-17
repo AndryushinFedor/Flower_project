@@ -103,7 +103,11 @@ body {
     cursor: pointer;
     transition: opacity 0.3s ease, transform 0.3s ease;
     position: relative;
+    font-size: 24px;
+    /* Increased font size */
 }
+
+
 
 .choice.selected {
     position: relative;
