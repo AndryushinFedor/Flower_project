@@ -83,23 +83,52 @@ function handleUserInput() {
 }
 
 function updateColorDisplay() {
-    const colorCircles = document.querySelectorAll('.color-circle');
-    colorCircles.forEach((circle, index) => {
-        circle.classList.toggle('selected', index === currentColorIndex);
-    });
+    const question = questions[currentQuestion];
+    if (question.type === "color") {
+        const colorCircles = document.querySelectorAll('.color-circle');
+        colorCircles.forEach((circle, index) => {
+            circle.classList.toggle('selected', index === currentColorIndex);
+        });
+    }
 }
 
 function updateChoiceDisplay() {
-    const choices = document.getElementById('choices').children;
-    Array.from(choices).forEach((choice, index) => {
-        choice.classList.toggle('selected', index === currentChoiceIndex);
-    });
+    const choicesDiv = document.getElementById('choices');
+    const choices = choicesDiv.children;
+    for (let i = 0; i < choices.length; i++) {
+        choices[i].classList.remove('selected');
+    }
+    choices[currentChoiceIndex].classList.add('selected');
 }
 
 function showQuestion(index) {
     const question = questions[index];
-    updateTextContent('question', question.text);
-    updateTextContent('instructions', "Use keys 1 (left) and 5 (right) to change options, and 3 to select");
+    const questionElement = document.getElementById('question');
+    const instructionsElement = document.getElementById('instructions');
+    if (questionElement) {
+        questionElement.textContent = question.text;
+        questionElement.style.opacity = 0;
+        questionElement.style.transform = "translateY(20px)";
+        setTimeout(() => {
+            questionElement.style.opacity = 1;
+            questionElement.style.transform = "translateY(0)";
+        }, 100); // Delay to ensure the transition works
+    } else {
+        console.error('Element with ID "question" not found.');
+        return;
+    }
+    if (instructionsElement) {
+        instructionsElement.textContent = "Use keys 1 (left) and 5 (right) to change options, and 3 to select";
+        instructionsElement.style.opacity = 0;
+        instructionsElement.style.transform = "translateY(20px)";
+        setTimeout(() => {
+            instructionsElement.style.opacity = 1;
+            instructionsElement.style.transform = "translateY(0)";
+        }, 100); // Delay to ensure the transition works
+    } else {
+        console.error('Element with ID "instructions" not found.');
+        return;
+    }
 
     const choicesDiv = document.getElementById('choices');
     const colorDisplayDiv = document.getElementById('color-display');
@@ -124,19 +153,6 @@ function showQuestion(index) {
         colorDisplayDiv.style.display = "flex";
         currentColorIndex = 0; // Start with the first color
         updateColorDisplay();
-    }
-}
-
-function updateTextContent(elementId, textContent) {
-    const element = document.getElementById(elementId);
-    if (element) {
-        element.textContent = textContent;
-        element.classList.remove('fade-in');
-        setTimeout(() => {
-            element.classList.add('fade-in');
-        }, 0); // Restart animation
-    } else {
-        console.error(`Element with ID "${elementId}" not found.`);
     }
 }
 
@@ -213,27 +229,27 @@ function displayTerminalAnimation(prompt) {
 
     let i = 0;
     let isRapidPhase = false;
-    const maxLines = 20;
+    const maxLines = 20; // Maximum number of lines displayed on the screen
 
     function typeWriter() {
         if (!isRapidPhase) {
             if (i < initialLines.length) {
                 appendLine(initialLines[i]);
                 i++;
-                setTimeout(typeWriter, 1000);
+                setTimeout(typeWriter, 1000); // Adjust typing speed for initial lines
             } else {
                 i = 0;
                 isRapidPhase = true;
-                setTimeout(typeWriter, 500);
+                setTimeout(typeWriter, 500); // Short delay before starting rapid lines
             }
         } else {
             if (i < rapidLines.length) {
                 appendLine(rapidLines[i]);
                 i++;
-                setTimeout(typeWriter, 100);
+                setTimeout(typeWriter, 100); // Adjust typing speed for rapid lines
             } else {
                 i = 0;
-                setTimeout(typeWriter, 100);
+                setTimeout(typeWriter, 100); // Restart rapid lines
             }
         }
     }
@@ -243,6 +259,7 @@ function displayTerminalAnimation(prompt) {
         line.textContent = text;
         terminal.appendChild(line);
 
+        // Remove extra lines
         if (terminal.children.length > maxLines) {
             terminal.removeChild(terminal.firstChild);
         }
