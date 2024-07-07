@@ -1,3 +1,18 @@
+const introText1 = [
+    "Welcome to the year 2107.",
+    "The world as we know it has changed.",
+    "The wildlife and plants we once knew to cover this great planet have vanished at the hands of humans.",
+    "A longing for what once was is growing amongst the new inhabitants of this world."
+];
+
+
+
+const introText2 = [
+    "To reconnect with our past, we have developed a new personal identification method.",
+    "To rebuild society and imagine a world with the beauty that Earth is capable of.",
+    "Instead of paper documents, you build your Personalized Identification Flower."
+];
+
 const questions = [
     { text: "Pick a color you like", type: "color", colors: ["Red", "Green", "Blue", "Yellow", "Purple", "Orange"] },
     { text: "Do you more follow the path than explore the woods?", type: "choice", choices: ["Agree", "Partly agree", "Not sure", "Disagree", "Strongly disagree"], apiValues: ["Round", "Sharp", "Spiky", "Wavy", "Spiral"] },
@@ -38,26 +53,65 @@ let currentQuestion = 0;
 let currentColorIndex = 0;
 let currentChoiceIndex = 0;
 
-// Load sounds
-const clickSound = new Audio('sounds/click.wav');
-const selectSound = new Audio('sounds/select.wav');
-
 document.addEventListener('DOMContentLoaded', function() {
-    showQuestion(currentQuestion);
+    showIntroText(introText1, () => {
+        setTimeout(() => {
+            fadeOutIntroText(() => {
+                showIntroText(introText2, () => {
+                    setTimeout(() => {
+                        fadeOutIntroText(() => showQuestion(currentQuestion));
+                    }, 5000);
+                });
+            });
+        }, 5000);
+    });
 });
 
 document.addEventListener('keydown', function(event) {
     if (event.key === '1') {
         changeSelection(-1);
-        clickSound.play();
     } else if (event.key === '5') {
         changeSelection(1);
-        clickSound.play();
     } else if (event.key === '3') {
         handleUserInput();
-        selectSound.play();
     }
 });
+
+function showIntroText(textArray, callback) {
+    const container = document.getElementById('container');
+    container.innerHTML = ''; // Clear the container
+    container.classList.add('intro-text'); // Add class for styling
+
+    textArray.forEach((line, index) => {
+        const p = document.createElement('p');
+        p.textContent = line;
+        container.appendChild(p);
+
+        setTimeout(() => {
+            p.style.transition = 'opacity 1s';
+            p.style.opacity = 1;
+        }, index * 1000);
+    });
+
+    setTimeout(callback, textArray.length * 1000 + 1000);
+}
+
+function fadeOutIntroText(callback) {
+    const container = document.getElementById('container');
+    const paragraphs = container.querySelectorAll('p');
+
+    paragraphs.forEach((p, index) => {
+        setTimeout(() => {
+            p.style.transition = 'opacity 1s';
+            p.style.opacity = 0;
+        }, index * 70); // Уменьшено время появления до 70%
+    });
+
+    setTimeout(() => {
+        paragraphs.forEach(p => p.remove());
+        callback();
+    }, paragraphs.length * 70 + 2000); // Уменьшено время до 70% + 2 секунды
+}
 
 function changeSelection(direction) {
     const question = questions[currentQuestion];
@@ -103,8 +157,31 @@ function updateChoiceDisplay() {
 
 function showQuestion(index) {
     const question = questions[index];
-    const questionElement = document.getElementById('question');
-    const instructionsElement = document.getElementById('instructions');
+    const container = document.getElementById('container'); // Get the container
+    container.innerHTML = ''; // Clear the container
+    
+    const headerDiv = document.createElement('div');
+    headerDiv.className = 'header';
+    const questionElement = document.createElement('div');
+    questionElement.id = 'question';
+    questionElement.className = 'title';
+    const instructionsElement = document.createElement('div');
+    instructionsElement.id = 'instructions';
+    instructionsElement.className = 'instructions';
+    headerDiv.appendChild(questionElement);
+    headerDiv.appendChild(instructionsElement);
+    container.appendChild(headerDiv);
+
+    const choicesDiv = document.createElement('div');
+    choicesDiv.id = 'choices';
+    choicesDiv.className = 'choices';
+    container.appendChild(choicesDiv);
+
+    const colorDisplayDiv = document.createElement('div');
+    colorDisplayDiv.id = 'color-display';
+    colorDisplayDiv.className = 'color-display';
+    container.appendChild(colorDisplayDiv);
+
     if (questionElement) {
         questionElement.textContent = question.text;
         questionElement.style.opacity = 0;
@@ -130,9 +207,6 @@ function showQuestion(index) {
         return;
     }
 
-    const choicesDiv = document.getElementById('choices');
-    const colorDisplayDiv = document.getElementById('color-display');
-
     choicesDiv.innerHTML = '';
     colorDisplayDiv.style.display = 'none';
 
@@ -151,7 +225,14 @@ function showQuestion(index) {
     } else if (question.type === "color") {
         choicesDiv.style.display = "none";
         colorDisplayDiv.style.display = "flex";
-        currentColorIndex = 0; // Start with the first color
+        question.colors.forEach((color, i) => {
+            const div = document.createElement('div');
+            div.className = 'color-circle';
+            if (i === 0) {
+                div.classList.add('selected');
+            }
+            colorDisplayDiv.appendChild(div);
+        });
         updateColorDisplay();
     }
 }
@@ -174,19 +255,20 @@ function generatePrompt() {
     displayTerminalAnimation(prompt);
 
     // Code for sending data to TouchDesigner API
-    /*
-    fetch('https://your-api-endpoint.com', {
-        method: 'POST',
+    fetch('http://172.16.11.43:9980?prompt='+prompt, {
+        method: 'GET',
+        mode: 'no-cors',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ prompt: prompt })
-    }).then(response => response.json())
-    .then(data => console.log('Success:', data))
+    // body: JSON.stringify({ prompt: prompt })
+    })
+    // .then(response => response.json())
+    .then(response => console.log('Success:', response))
     .catch((error) => {
         console.error('Error:', error);
     });
-    */
+
 }
 
 function displayTerminalAnimation(prompt) {

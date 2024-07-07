@@ -224,13 +224,22 @@ body {
 }
 
 .fade-out {
-    animation: fadeOut 1s forwards;
+    animation: fadeOut 2s forwards;
+    /* Уменьшено время до 2 секунд */
 }
 
 .fade-out-delayed {
-    animation: delayedFadeOut 1s forwards 2s;
+    animation: delayedFadeOut 2s forwards 2s;
+    /* Уменьшено время до 2 секунд */
 }
 
 .hidden {
     display: none;
+}
+
+.intro-text p {
+    font-size: 24px;
+    line-height: 32px;
+    margin: 4px 0;
+    opacity: 0;
 }
