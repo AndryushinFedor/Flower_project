@@ -69,7 +69,7 @@ body {
 
 .title,
 .instructions {
-    color: #00EC7B;
+    color: #00FF00;
     text-align: center;
     font-family: DinaRemasterII;
     display: inline-block;
@@ -225,12 +225,10 @@ body {
 
 .fade-out {
     animation: fadeOut 2s forwards;
-    /* Уменьшено время до 2 секунд */
 }
 
 .fade-out-delayed {
     animation: delayedFadeOut 2s forwards 2s;
-    /* Уменьшено время до 2 секунд */
 }
 
 .hidden {
@@ -238,7 +236,7 @@ body {
 }
 
 .intro-text p {
-    font-size: 24px;
+    font-size: 28px;
     line-height: 32px;
     margin: 4px 0;
     opacity: 0;
