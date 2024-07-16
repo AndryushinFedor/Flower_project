@@ -38,7 +38,7 @@ body {
 
 .terminal {
     font-family: 'DinaRemasterII', Arial, sans-serif;
-    font-size: 18px;
+    font-size: 24px;
     white-space: pre-wrap;
     text-align: left;
     position: absolute;
@@ -155,19 +155,19 @@ body {
 }
 
 .color-circle:nth-child(2) {
-    background-color: #E66109;
-}
-
-.color-circle:nth-child(3) {
     background-color: #E6D009;
 }
 
-.color-circle:nth-child(4) {
+.color-circle:nth-child(3) {
     background-color: #09E618;
 }
 
-.color-circle:nth-child(5) {
+.color-circle:nth-child(4) {
     background-color: #0969E6;
+}
+
+.color-circle:nth-child(5) {
+    background-color: #AB09E6;
 }
 
 .color-circle:nth-child(6) {
@@ -179,19 +179,19 @@ body {
 }
 
 .color-circle.selected:nth-child(2) {
-    filter: drop-shadow(0px 0px 20px #E66109);
-}
-
-.color-circle.selected:nth-child(3) {
     filter: drop-shadow(0px 0px 20px #E6D009);
 }
 
-.color-circle.selected:nth-child(4) {
+.color-circle.selected:nth-child(3) {
     filter: drop-shadow(0px 0px 20px #09E618);
 }
 
-.color-circle.selected:nth-child(5) {
+.color-circle.selected:nth-child(4) {
     filter: drop-shadow(0px 0px 20px #0969E6);
+}
+
+.color-circle.selected:nth-child(5) {
+    filter: drop-shadow(0px 0px 20px #AB09E6);
 }
 
 .color-circle.selected:nth-child(6) {
@@ -236,6 +236,13 @@ body {
 }
 
 .intro-text p {
+    font-size: 28px;
+    line-height: 32px;
+    margin: 4px 0;
+    opacity: 0;
+}
+
+.start-message {
     font-size: 28px;
     line-height: 32px;
     margin: 4px 0;

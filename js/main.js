@@ -28,10 +28,10 @@ const preQuestion4Text = [
 ];
 
 const questions = [
-    { text: "Pick a color you like", type: "color", colors: ["Red", "Green", "Blue", "Yellow", "Purple"] },
-    { text: "What is your mood today?", type: "choice", choices: ["Vivid", "Sharp", "Spiky", "Wavy", "Soft"], apiValues: ["Round", "Sharp", "Spiky", "Wavy", "Spiral"] },
-    { text: "Which path do you choose?", type: "choice", choices: ["You follow the neat path", "You explore the unpredictable path", "You create your own path", "You observe from the edge", "You turn around"] },
-    { text: "You decided to plant them. How does it make you feel?", type: "choice", choices: ["Excited", "Curious", "Patient", "Nervous", "Hopeful"] }
+    { text: "Pick a color you like (confirm with Q)", type: "color", colors: ["Red", "Green", "Blue", "Yellow", "Purple"] },
+    { text: "What is your mood today? (confirm with W)", type: "choice", choices: ["Vivid", "Sharp", "Spiky", "Wavy", "Soft"], apiValues: ["Round", "Sharp", "Spiky", "Wavy", "Spiral"] },
+    { text: "Which path do you choose? (confirm with E)", type: "choice", choices: ["You follow the neat path", "You explore the unpredictable path", "You create your own path", "You observe from the edge", "You turn around"] },
+    { text: "You decided to plant them. How does it make you feel? (confirm with R)", type: "choice", choices: ["Excited", "Curious", "Patient", "Nervous", "Hopeful"] }
 ];
 
 const flowerTypes = {
@@ -69,8 +69,6 @@ const flowerTypes = {
 
 const answers = [];
 let currentQuestion = 0;
-let currentColorIndex = 0;
-let currentChoiceIndex = 0;
 
 document.addEventListener('DOMContentLoaded', function() {
     showPressAnyKey();
@@ -78,21 +76,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
 document.addEventListener('keydown', function(event) {
     if (!window.audioStarted) {
-        startAudio();
+        if (event.key === 'Enter') {
+            startAudio();
+        }
         return;
     }
-
+    
     if (['1', '2', '3', '4', '5'].includes(event.key)) {
-        selectOption(parseInt(event.key) - 1);
-    }
-
-    if (event.key === 'q' && currentQuestion === 0) {
+        changeSelection(parseInt(event.key) - 1);
+    } else if (event.key.toLowerCase() === 'q' && currentQuestion === 0) {
         handleUserInput();
-    } else if (event.key === 'w' && currentQuestion === 1) {
+    } else if (event.key.toLowerCase() === 'w' && currentQuestion === 1) {
         handleUserInput();
-    } else if (event.key === 'e' && currentQuestion === 2) {
+    } else if (event.key.toLowerCase() === 'e' && currentQuestion === 2) {
         handleUserInput();
-    } else if (event.key === 'r' && currentQuestion === 3) {
+    } else if (event.key.toLowerCase() === 'r' && currentQuestion === 3) {
         handleUserInput();
     }
 });
@@ -100,6 +98,11 @@ document.addEventListener('keydown', function(event) {
 function showPressAnyKey() {
     const container = document.getElementById('container');
     container.innerHTML = '<div class="start-message">Press Enter to start</div>';
+    const startMessage = container.querySelector('.start-message');
+    setTimeout(() => {
+        startMessage.style.transition = 'opacity 1s';
+        startMessage.style.opacity = 1;
+    }, 100); // Добавлено для плавного появления текста
 }
 
 function startAudio() {
@@ -108,7 +111,7 @@ function startAudio() {
     audio.play().catch(error => console.error("Error playing audio:", error));
     window.audio = audio; // Save to global scope to stop later
     window.audioStarted = true;
-
+    
     // Start the intro text display
     showIntroText(introText1, () => {
         setTimeout(() => {
@@ -163,7 +166,7 @@ function fadeOutIntroText(callback) {
     }, 4000); // 4 seconds after all lines have appeared
 }
 
-function selectOption(index) {
+function changeSelection(index) {
     const question = questions[currentQuestion];
     if (question.type === "color") {
         currentColorIndex = index;
@@ -245,7 +248,7 @@ function showQuestion(index) {
         return;
     }
     if (instructionsElement) {
-        instructionsElement.textContent = `Use keys 1-5 to select an option, and press ${getConfirmationKey(currentQuestion)} to confirm`;
+        instructionsElement.textContent = "Use keys 1 (left) and 5 (right) to change options, and 3 to select";
         instructionsElement.style.opacity = 0;
         instructionsElement.style.transform = "translateY(20px)";
         setTimeout(() => {
@@ -270,7 +273,7 @@ function showQuestion(index) {
             div.textContent = choice;
             choicesDiv.appendChild(div);
         });
-        currentChoiceIndex = Math.floor(question.choices.length / 2); // Default to the middle choice
+        currentChoiceIndex = 0;
         updateChoiceDisplay();
     } else if (question.type === "color") {
         choicesDiv.style.display = "none";
@@ -283,17 +286,8 @@ function showQuestion(index) {
             }
             colorDisplayDiv.appendChild(div);
         });
+        currentColorIndex = 0;
         updateColorDisplay();
-    }
-}
-
-function getConfirmationKey(questionIndex) {
-    switch(questionIndex) {
-        case 0: return 'q';
-        case 1: return 'w';
-        case 2: return 'e';
-        case 3: return 'r';
-        default: return '';
     }
 }
 
