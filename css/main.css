@@ -1,13 +1,13 @@
 @font-face {
     font-family: 'DinaRemasterII';
-    src: url('../fonts/DinaRemasterII.ttc') format('truetype');
+    src: url('../fonts/DinaRemasterII.ttf') format('truetype');
     font-weight: 500;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'DinaRemasterII';
-    src: url('../fonts/DinaRemasterII.ttc') format('truetype');
+    src: url('../fonts/DinaRemasterII-Bold.ttf') format('truetype');
     font-weight: 700;
     font-style: bold;
 }
@@ -170,6 +170,26 @@ body {
     background-color: #AB09E6;
 }
 
+.color-circle.selected:nth-child(1) {
+    filter: drop-shadow(0px 0px 20px #E60909);
+}
+
+.color-circle.selected:nth-child(2) {
+    filter: drop-shadow(0px 0px 20px #E6D009);
+}
+
+.color-circle.selected:nth-child(3) {
+    filter: drop-shadow(0px 0px 20px #09E618);
+}
+
+.color-circle.selected:nth-child(4) {
+    filter: drop-shadow(0px 0px 20px #0969E6);
+}
+
+.color-circle.selected:nth-child(5) {
+    filter: drop-shadow(0px 0px 20px #AB09E6);
+}
+
 @keyframes fadeOut {
     from {
         opacity: 1;
@@ -207,17 +227,9 @@ body {
     display: none;
 }
 
-.intro-text p {
+.intro-text p, .start-message {
     font-size: 28px;
     line-height: 32px;
     margin: 4px 0;
     opacity: 0;
-}
-
-.start-message {
-    font-size: 28px;
-    line-height: 32px;
-    margin: 4px 0;
-    opacity: 0;
-    transition: opacity 1s ease-in-out;
 }
