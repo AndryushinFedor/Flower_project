@@ -12,7 +12,8 @@ const introText2 = [
 ];
 
 const preQuestion3Text = [
-    "Imagine you are standing at the edge of a valley, surrounded by mountains. It is very quiet and the moon is above you.",
+    "Imagine you are standing at the edge of a valley, surrounded by mountains.",
+    "It is very quiet and the moon is above you.",
     "Before you lies a neat path, going directly to your destination.",
     "But on the left, you see an opening winding through the rocks.",
     "The second path is inviting you to explore it"
@@ -24,14 +25,15 @@ const preQuestion4Text = [
     "The letter says:",
     "\"To whoever finds this,",
     "I’ve been collecting these seeds since 2024, hoping they will be useful in the future.",
-    "If you find them, use them wisely.\""
+    "If you find them, use them wisely.\"",
+    "Good luck."
 ];
 
 const questions = [
-    { text: "Pick a color you like (confirm with Q)", type: "color", colors: ["Red", "Green", "Blue", "Yellow", "Purple"] },
-    { text: "What is your mood today? (confirm with W)", type: "choice", choices: ["Vivid", "Sharp", "Spiky", "Wavy", "Soft"], apiValues: ["Round", "Sharp", "Spiky", "Wavy", "Spiral"] },
-    { text: "Which path do you choose? (confirm with E)", type: "choice", choices: ["You follow the neat path", "You explore the unpredictable path", "You create your own path", "You observe from the edge", "You turn around"] },
-    { text: "You decided to plant them. How does it make you feel? (confirm with R)", type: "choice", choices: ["Excited", "Curious", "Patient", "Nervous", "Hopeful"] }
+    { text: "Pick a color you like", type: "color", colors: ["Red", "Green", "Blue", "Yellow", "Purple"] },
+    { text: "What is your mood today?", type: "choice", choices: ["Vivid", "Sharp", "Spiky", "Wavy", "Soft"], apiValues: ["Round", "Sharp", "Spiky", "Wavy", "Spiral"] },
+    { text: "Which path do you choose?", type: "choice", choices: ["You follow the neat path", "You explore the unpredictable path", "You create your own path", "You observe from the edge", "You turn around"] },
+    { text: "You decided to plant them. How does it make you feel?", type: "choice", choices: ["Excited", "Curious", "Patient", "Nervous", "Hopeful"] }
 ];
 
 const flowerTypes = {
@@ -69,6 +71,8 @@ const flowerTypes = {
 
 const answers = [];
 let currentQuestion = 0;
+let currentColorIndex = 0;
+let currentChoiceIndex = 0;
 
 document.addEventListener('DOMContentLoaded', function() {
     showPressAnyKey();
@@ -76,21 +80,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
 document.addEventListener('keydown', function(event) {
     if (!window.audioStarted) {
-        if (event.key === 'Enter') {
-            startAudio();
-        }
+        startAudio();
         return;
     }
     
-    if (['1', '2', '3', '4', '5'].includes(event.key)) {
+    if (event.key >= '1' && event.key <= '5') {
         changeSelection(parseInt(event.key) - 1);
-    } else if (event.key.toLowerCase() === 'q' && currentQuestion === 0) {
-        handleUserInput();
-    } else if (event.key.toLowerCase() === 'w' && currentQuestion === 1) {
-        handleUserInput();
-    } else if (event.key.toLowerCase() === 'e' && currentQuestion === 2) {
-        handleUserInput();
-    } else if (event.key.toLowerCase() === 'r' && currentQuestion === 3) {
+    } else if (event.key === getConfirmKey(currentQuestion)) {
         handleUserInput();
     }
 });
@@ -100,9 +96,8 @@ function showPressAnyKey() {
     container.innerHTML = '<div class="start-message">Press Enter to start</div>';
     const startMessage = container.querySelector('.start-message');
     setTimeout(() => {
-        startMessage.style.transition = 'opacity 1s';
         startMessage.style.opacity = 1;
-    }, 100); // Добавлено для плавного появления текста
+    }, 100);
 }
 
 function startAudio() {
@@ -111,7 +106,7 @@ function startAudio() {
     audio.play().catch(error => console.error("Error playing audio:", error));
     window.audio = audio; // Save to global scope to stop later
     window.audioStarted = true;
-    
+
     // Start the intro text display
     showIntroText(introText1, () => {
         setTimeout(() => {
@@ -190,13 +185,10 @@ function handleUserInput() {
 }
 
 function updateColorDisplay() {
-    const question = questions[currentQuestion];
-    if (question.type === "color") {
-        const colorCircles = document.querySelectorAll('.color-circle');
-        colorCircles.forEach((circle, index) => {
-            circle.classList.toggle('selected', index === currentColorIndex);
-        });
-    }
+    const colorCircles = document.querySelectorAll('.color-circle');
+    colorCircles.forEach((circle, index) => {
+        circle.classList.toggle('selected', index === currentColorIndex);
+    });
 }
 
 function updateChoiceDisplay() {
@@ -210,7 +202,7 @@ function updateChoiceDisplay() {
 
 function showQuestion(index) {
     const question = questions[index];
-    const container = document.getElementById('container'); // Get the container
+    const container = document.getElementById('container');
     container.innerHTML = ''; // Clear the container
     
     const headerDiv = document.createElement('div');
@@ -247,8 +239,9 @@ function showQuestion(index) {
         console.error('Element with ID "question" not found.');
         return;
     }
+
     if (instructionsElement) {
-        instructionsElement.textContent = "Use keys 1 (left) and 5 (right) to change options, and 3 to select";
+        instructionsElement.textContent = `Use keys 1-5 to change options and "${getConfirmKey(index)}" to select`;
         instructionsElement.style.opacity = 0;
         instructionsElement.style.transform = "translateY(20px)";
         setTimeout(() => {
@@ -273,7 +266,6 @@ function showQuestion(index) {
             div.textContent = choice;
             choicesDiv.appendChild(div);
         });
-        currentChoiceIndex = 0;
         updateChoiceDisplay();
     } else if (question.type === "color") {
         choicesDiv.style.display = "none";
@@ -286,14 +278,32 @@ function showQuestion(index) {
             }
             colorDisplayDiv.appendChild(div);
         });
-        currentColorIndex = 0;
         updateColorDisplay();
     }
 }
 
+function getConfirmKey(questionIndex) {
+    if (questionIndex === 0) return 'q';
+    if (questionIndex === 1) return 'w';
+    if (questionIndex === 2) return 'e';
+    return 'r';
+}
+
 function nextQuestion() {
     currentQuestion++;
-    if (currentQuestion < questions.length) {
+    if (currentQuestion === 2) {
+        showIntroText(preQuestion3Text, () => {
+            setTimeout(() => {
+                fadeOutIntroText(() => showQuestion(currentQuestion));
+            }, 4000);
+        });
+    } else if (currentQuestion === 3) {
+        showIntroText(preQuestion4Text, () => {
+            setTimeout(() => {
+                fadeOutIntroText(() => showQuestion(currentQuestion));
+            }, 4000);
+        });
+    } else if (currentQuestion < questions.length) {
         showQuestion(currentQuestion);
     } else {
         generatePrompt();
