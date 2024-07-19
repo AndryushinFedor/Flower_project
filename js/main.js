@@ -199,7 +199,7 @@ function updateChoiceDisplay() {
     const choices = choicesDiv.children;
     for (let i = 0; i < choices.length; i++) {
         choices[i].classList.remove('selected');
-        choices[i].style.opacity = 1; // Ensure all choices have the same opacity
+        choices[i].style.opacity = 1; // Ensure all choices are fully visible for the first two questions
     }
     if (currentQuestion >= 2) {
         for (let i = 0; i < choices.length; i++) {
@@ -345,6 +345,10 @@ function generatePrompt() {
         console.error('Error:', error);
     });
 
+    // Reset the page after 30 seconds
+    setTimeout(() => {
+        location.reload();
+    }, 30000); // 30 seconds
 }
 
 function displayTerminalAnimation(prompt) {
