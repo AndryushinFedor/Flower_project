@@ -159,7 +159,7 @@ body {
 }
 
 .color-circle:nth-child(3) {
-    background-color: #6a00ff;
+    background-color: #6A00FF;
 }
 
 .color-circle:nth-child(4) {
@@ -167,7 +167,7 @@ body {
 }
 
 .color-circle:nth-child(5) {
-    background-color: #ff00ea;
+    background-color: #FF00EA;
 }
 
 .color-circle.selected:nth-child(1) {
