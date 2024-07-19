@@ -250,7 +250,7 @@ function showQuestion(index) {
     }
 
     if (instructionsElement) {
-        instructionsElement.textContent = `Use keys 1-5 to change options and "${getConfirmKey(index)}" to select`;
+        instructionsElement.textContent = `Use keys 1-5 to change options and "Enter" to select`;
         instructionsElement.style.opacity = 0;
         instructionsElement.style.transform = "translateY(20px)";
         setTimeout(() => {
