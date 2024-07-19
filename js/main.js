@@ -187,8 +187,11 @@ function handleUserInput() {
 function updateColorDisplay() {
     const colorCircles = document.querySelectorAll('.color-circle');
     colorCircles.forEach((circle, index) => {
-        circle.classList.toggle('selected', index === currentColorIndex);
+        circle.classList.remove('selected');
     });
+    if (currentQuestion >= 2) {
+        colorCircles[currentColorIndex].classList.add('selected');
+    }
 }
 
 function updateChoiceDisplay() {
@@ -196,8 +199,14 @@ function updateChoiceDisplay() {
     const choices = choicesDiv.children;
     for (let i = 0; i < choices.length; i++) {
         choices[i].classList.remove('selected');
+        choices[i].style.opacity = 1; // Ensure all choices have the same opacity
     }
-    choices[currentChoiceIndex].classList.add('selected');
+    if (currentQuestion >= 2) {
+        for (let i = 0; i < choices.length; i++) {
+            choices[i].style.opacity = (i === currentChoiceIndex) ? 1 : 0.5;
+        }
+        choices[currentChoiceIndex].classList.add('selected');
+    }
 }
 
 function showQuestion(index) {
@@ -273,9 +282,6 @@ function showQuestion(index) {
         question.colors.forEach((color, i) => {
             const div = document.createElement('div');
             div.className = 'color-circle';
-            if (i === 0) {
-                div.classList.add('selected');
-            }
             colorDisplayDiv.appendChild(div);
         });
         updateColorDisplay();
